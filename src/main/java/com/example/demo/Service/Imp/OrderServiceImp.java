@@ -1,6 +1,7 @@
 package com.example.demo.Service.Imp;
 
 import java.util.Date;
+import java.util.*;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -18,6 +19,7 @@ import com.example.demo.Model.Cart;
 import com.example.demo.Model.CartItem;
 import com.example.demo.Model.Order;
 import com.example.demo.Model.OrderItem;
+import com.example.demo.Model.Role;
 import com.example.demo.Model.User;
 import com.example.demo.Repository.CartRepository;
 import com.example.demo.Repository.OrderRepository;
@@ -25,6 +27,8 @@ import com.example.demo.Repository.UserRepository;
 import com.example.demo.Service.OrderService;
 import com.example.demo.payload.OrderDto;
 import com.example.demo.payload.OrderRequest;
+import com.example.demo.payload.RoleDto;
+import com.example.demo.payload.UserDto;
 
 //import com.ecom.Exception.ResourceNotFoundException;
 //import com.ecom.Model.Cart;
@@ -48,7 +52,7 @@ public class OrderServiceImp implements OrderService{
 	 @Autowired
 	private OrderRepository orderRepository;
 	 @Autowired
-	private  ModelMapper mapper;
+		ModelMapper mapper;
 	
 
 	@Override
@@ -110,14 +114,15 @@ public class OrderServiceImp implements OrderService{
 	    User findByEmail = this.userRepository.findByEmail(p).orElseThrow(()->new ResourceNotFoundException("User Not Found"));
 		List<Order> findAll = this.orderRepository.findByUser(findByEmail).orElseThrow(()->new ResourceNotFoundException("Order Not Found"));
 		
-		List<OrderDto> collect = findAll.stream().map((each) -> this.mapper.map(each,OrderDto.class)).collect(Collectors.toList());
+		List<OrderDto> collect = findAll.stream().map((each) -> toDto(each)).collect(Collectors.toList());
 		return collect;
 	}
 
 	@Override
 	public OrderDto getOrder(int OrderId) {
 		 Order order = this.orderRepository.findById(OrderId).orElseThrow(()->new ResourceNotFoundException("Order not Found"));
-		return this.mapper.map(order,OrderDto.class);
+		 return toDto(order);
+//		 return this.mapper.map(order,OrderDto.class);
 	}
 
 	@Override
@@ -144,11 +149,41 @@ public class OrderServiceImp implements OrderService{
 	public List<OrderDto> listAllOrder() {
 		List<Order> listallorder = this.orderRepository.findAll();
 		
-		 List<OrderDto> collect2 = listallorder.stream().map((each)-> this.mapper.map(each,OrderDto.class)).collect(Collectors.toList());
+		 List<OrderDto> collect2 = listallorder.stream().map((each)-> toDto(each)).collect(Collectors.toList());
 		
 		return collect2;
 	}
-	
+
+	public OrderDto toDto(Order ordr) {
+		OrderDto oDto = new OrderDto();
+		oDto.setBillingAddress(ordr.getBillingAddress());
+		oDto.setItem(ordr.getItem());
+		oDto.setOrderAmout(ordr.getOrderAmout());
+		oDto.setOrderCreated(ordr.getOrderCreated());
+		oDto.setOrderDelivered(ordr.getOrderDelivered());
+		oDto.setOrderId(ordr.getOrderId());
+		oDto.setOrderStatus(ordr.getOrderStatus());
+		oDto.setPaymentStatus(ordr.getPaymentStatus());
+		UserDto udot = new UserDto();
+		udot.setAbout(ordr.getUser().getAbout());
+		udot.setActive(ordr.getUser().isActive());
+		udot.setAddress(ordr.getUser().getAddress());
+		udot.setDate(ordr.getUser().getDate());
+		udot.setEmail(ordr.getUser().getEmail());
+		udot.setGender(ordr.getUser().getGender());
+		udot.setName(ordr.getUser().getName());
+		udot.setPassword(ordr.getUser().getPassword());
+		udot.setPhone(ordr.getUser().getPhone());
+		Set<Role> rr = ordr.getUser().getRoles();
+		Set<RoleDto> rd = rr.stream().map((e) -> mapper.map(e, RoleDto.class)).collect(Collectors.toSet());
+//		RoleDto.class).collect(Collectors.toList());;
+//		RoleDto rdto = new RoleDto();
+//		rdto.setId(ordr.getUser().getRoles());
+		udot.setRoles(rd);
+		udot.setUserId(ordr.getUser().getUserId());
+		oDto.setUser(udot);
+		return oDto;
+	}
 	
 
 

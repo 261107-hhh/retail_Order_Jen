@@ -43,7 +43,7 @@ public class OrderController {
 	   return new ResponseEntity<OrderDto>(create,HttpStatus.CREATED);
 	}
 	
-	//Getting all Order from user
+	//Getting all Order from user 
 	@GetMapping("/")
 	public ResponseEntity<List<OrderDto>>getOrderByUser(Principal p){
 	          
@@ -84,5 +84,6 @@ public class OrderController {
 	   
 	   return new ResponseEntity<OrderDto>(order,HttpStatus.OK);
    }
+	
 
 }

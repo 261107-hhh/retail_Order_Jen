@@ -5,6 +5,7 @@ import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -21,7 +22,7 @@ public class Cart {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int cartId;
 	@JsonManagedReference
-	@OneToMany(mappedBy = "cart" ,cascade=CascadeType.ALL,orphanRemoval = true)
+	@OneToMany(mappedBy = "cart" ,cascade=CascadeType.ALL,orphanRemoval = true,fetch=FetchType.EAGER)
 	private Set<CartItem> iteam=new HashSet<>();
 	
 	   @OneToOne
