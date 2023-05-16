@@ -19,7 +19,7 @@ pipeline {
                 //bat 'mvn test'
                 //bat 'mvn test'
                 //echo 'mvn tested'
-                bat 'mvn package'
+                bat 'mvn test'
                 echo 'packed and tested'  
             }
         }
