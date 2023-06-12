@@ -164,6 +164,7 @@ class OrderControllerTest {
 		try {
 		    ResponseEntity<List<OrderDto>> res = orderController.getAllOrder();
 		    int size = res.getBody().size();
+		    System.out.println(res.getBody());
 		    assertEquals(HttpStatus.OK, res.getStatusCode());
 //		    assertEquals(orderId, res.getBody().get(size-1).getOrderId());
 			assertEquals(res.getBody().get(0).getUser().getEmail(), mail);

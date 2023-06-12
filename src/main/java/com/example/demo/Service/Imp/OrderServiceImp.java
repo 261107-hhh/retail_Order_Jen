@@ -19,10 +19,12 @@ import com.example.demo.Model.Cart;
 import com.example.demo.Model.CartItem;
 import com.example.demo.Model.Order;
 import com.example.demo.Model.OrderItem;
+import com.example.demo.Model.Product;
 import com.example.demo.Model.Role;
 import com.example.demo.Model.User;
 import com.example.demo.Repository.CartRepository;
 import com.example.demo.Repository.OrderRepository;
+import com.example.demo.Repository.ProductRepository;
 import com.example.demo.Repository.UserRepository;
 import com.example.demo.Service.OrderService;
 import com.example.demo.payload.OrderDto;
@@ -51,6 +53,9 @@ public class OrderServiceImp implements OrderService{
 	private CartRepository cartRepository;
 	 @Autowired
 	private OrderRepository orderRepository;
+
+	 @Autowired
+	private ProductRepository productRepository;
 	 @Autowired
 		ModelMapper mapper;
 	
@@ -68,9 +73,35 @@ public class OrderServiceImp implements OrderService{
 	    
 	    AtomicReference<Double>totalOrderPrize= new AtomicReference<>(0.0);
 	    Set<OrderItem> orderItems = items.stream().map((cartItem) ->{
-	    	
+
+	    	  System.out.println("Hi there Order  this is product quantity");
 	    	OrderItem orderItem=new OrderItem();
 	    	  orderItem.setProduct(cartItem.getProduct());
+//	    	  if(productQuntity() == product.getProductQuantity() ) {
+//			    	 product.setStock(false);
+//			    	 product.setProductQuantity(0);
+//			  }
+	    	  Product product = this.productRepository.findById(cartItem.getProduct().getProductId()).orElseThrow(()->new ResourceNotFoundException("Product not Found"));
+	    	  if(cartItem.getProduct().getProductQuantity() == cartItem.getQuantity()) {
+	    		  product.setProductQuantity(0);
+	    		  product.setStock(false);
+	    		  
+	    	  }
+	    	  else if(cartItem.getProduct().getProductQuantity() < cartItem.getQuantity()){
+	    		  System.out.println("Error is thrown Order Quantity is not available");
+	    		  throw new ResourceNotFoundException("Order Quantity is not available");
+	    	  }
+	    	  else {
+	    		  product.setProductQuantity(cartItem.getProduct().getProductQuantity()-cartItem.getQuantity());
+	    		  if(cartItem.getProduct().getProductQuantity()==0) 
+		    		  product.setStock(false);
+	    	  }
+//	    	  System.out.println(cartItem.getProduct().getProductQuantity()+" this is total product quantity");
+//	    	  System.out.println(cartItem.getQuantity()+" this is cart quantity");
+//	    	  System.out.println(cartItem.getProduct()+" this is product");
+	    	  
+	    	  
+	    	  
 	    	  orderItem.setQuantity(cartItem.getQuantity());
 	    	  orderItem.setTotalProductPrize(cartItem.getTotalproductprize());
 	    	  orderItem.setOrder(order);
@@ -128,7 +159,12 @@ public class OrderServiceImp implements OrderService{
 	@Override
 	public void deleteOrder(int orderId) {
 		Order findById = this.orderRepository.findById(orderId).orElseThrow(()->new ResourceNotFoundException("Order not Found"));
-		 this.orderRepository.delete(findById);
+//		System.out.println(findById.getItem().toString()+" this is item"); 
+//		System.out.println(findById.getItem().iterator().toString()+" this is delete item"); 
+//		System.out.println(findById.getItem()+" this is 0 delete item"); 
+//		System.out.println(findById.getItem()); 
+//		System.out.println(findById.getItem()); 
+		this.orderRepository.delete(findById);
 		
 	}
 
