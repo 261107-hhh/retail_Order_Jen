@@ -19,6 +19,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.demo.Exception.GlobalExceptionHandler;
+import com.example.demo.Exception.ResourceNotFoundException;
 import com.example.demo.Model.Order;
 import com.example.demo.Service.OrderService;
 import com.example.demo.payload.ApiResponse;
@@ -38,6 +40,9 @@ public class OrderController {
 	public ResponseEntity<OrderDto> createOrder(@RequestBody OrderRequest request,Principal principal){
 		//String username="malit@gmail.com";
 		System.out.println("Hi there order controller");
+		if(request.getAddress().isEmpty()) {
+			throw new ResourceNotFoundException("Address not present");
+		}
 		OrderDto create = orderService.create(request,principal.getName());
 		
 	   return new ResponseEntity<OrderDto>(create,HttpStatus.CREATED);

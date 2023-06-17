@@ -96,6 +96,7 @@ public class OrderServiceImp implements OrderService{
 	    		  if(cartItem.getProduct().getProductQuantity()==0) 
 		    		  product.setStock(false);
 	    	  }
+	    	  
 //	    	  System.out.println(cartItem.getProduct().getProductQuantity()+" this is total product quantity");
 //	    	  System.out.println(cartItem.getQuantity()+" this is cart quantity");
 //	    	  System.out.println(cartItem.getProduct()+" this is product");
