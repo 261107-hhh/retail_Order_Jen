@@ -81,8 +81,14 @@ public class OrderServiceImp implements OrderService{
 //			    	 product.setStock(false);
 //			    	 product.setProductQuantity(0);
 //			  }
+	    	  
 	    	  Product product = this.productRepository.findById(cartItem.getProduct().getProductId()).orElseThrow(()->new ResourceNotFoundException("Product not Found"));
-	    	  if(cartItem.getProduct().getProductQuantity() == cartItem.getQuantity()) {
+	    	 
+	    	  if(!cartItem.getProduct().isLive()) {
+	    		  System.out.println("Live or not: "+cartItem.getProduct().isLive());
+	    		  throw new ResourceNotFoundException("Product is not live");
+	    	  }
+	    	  else if(cartItem.getProduct().getProductQuantity() == cartItem.getQuantity()) {
 	    		  product.setProductQuantity(0);
 	    		  product.setStock(false);
 	    		  
